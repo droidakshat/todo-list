@@ -1,0 +1,30 @@
+# Python cache / compiled files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual environment
+venv/
+.venv/
+
+# VS Code settings
+.vscode/
+
+# SQLite / databases
+*.db
+
+# Node modules (if you’re mixing JS & Python)
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Environment / config files
+.env
+*.env
+
+# OS files
+.DS_Store
+Thumbs.db
