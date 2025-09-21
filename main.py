@@ -5,11 +5,11 @@ from pydantic import BaseModel
 from typing import List
 import datetime
 
-# Remove old database if exists (for development only)
+# Remove old database if exists 
 if os.path.exists('example.db'):
     os.remove('example.db')
 
-# Create table after (re)creating the database
+# Create table after
 def init_db():
     conn = sqlite3.connect('example.db')
     cursor = conn.cursor()
@@ -29,9 +29,11 @@ init_db()
 
 app = FastAPI()
 
+#initiate db connection
 def get_db():
     return sqlite3.connect('example.db')
 
+#pydantic model for tasks
 class Task(BaseModel):
     id: int | None = None
     title: str
@@ -39,6 +41,7 @@ class Task(BaseModel):
     completed: bool = False
     created_date: str | None = None
 
+#api endpoint to create a task
 @app.post("/tasks/create", response_model=Task)
 def create_task(task: Task):
     created_date = datetime.datetime.now().isoformat()
@@ -54,6 +57,7 @@ def create_task(task: Task):
     conn.close()
     return Task(id=task_id, title=task.title, description=task.description, completed=task.completed, created_date=created_date)
 
+#api endpoint to get all tasks
 @app.get("/tasks/", response_model=List[Task])
 def get_all_tasks():
     conn = get_db()
@@ -66,6 +70,7 @@ def get_all_tasks():
         for row in rows
     ]
 
+#api endpoint to get task by id
 @app.get("/tasks/{task_id}", response_model=Task)
 def get_task_by_id(task_id: int):
     conn = get_db()
@@ -77,6 +82,7 @@ def get_task_by_id(task_id: int):
         return Task(id=row[0], title=row[1], description=row[2], completed=bool(row[3]), created_date=row[4])
     return {"error": "Task not found"}
 
+#api endpoint to update task by id
 @app.put("/tasks/{task_id}", response_model=Task)
 def update_task(task_id: int, task: Task):
     conn = get_db()
@@ -92,6 +98,7 @@ def update_task(task_id: int, task: Task):
     created_date = row[0] if row else None
     return Task(id=task_id, title=task.title, description=task.description, completed=task.completed, created_date=created_date)
 
+#api endpoint to delete task by id
 @app.delete("/tasks/{task_id}")
 def delete_task(task_id: int):
     conn = get_db()
